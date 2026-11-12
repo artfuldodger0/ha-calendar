@@ -87,8 +87,8 @@ Pills use a light tint of the person's color with a solid color edge. All-day ev
   - The `days` option sets how many forecast tiles are shown.
 - **Fully local**: icons are HA's built-in MDI icons, and the font is served from `/local/`. Nothing loads from the internet.
 - **Sizing**:
-  - The theme sets the vertical layout: 14px gap, 104px strip, 12px gap, the calendar panel, then 80px of flowers at the bottom.
-  - Both panels sit 120px in from the left and right edges.
+  - The theme sets the vertical layout: 14px gap, 104px strip, 12px gap, the calendar panel, then 28px of flowers at the bottom.
+  - Both panels sit 40px in from the left and right edges, so the calendar gets most of the screen and the flowers frame it at the edges.
   - To resize, adjust `skylight-strip-*` / `skylight-panel-*` in the theme.
 
 ## How it's built and what can break on updates

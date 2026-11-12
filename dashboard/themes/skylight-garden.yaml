@@ -42,11 +42,11 @@ skylight-garden:
   divider-color: "rgba(107, 95, 82, 0.22)"
 
   # --- 1280x800 layout budget (top to bottom) -------------------------------
-  #  14px gap | 104px weather strip | 12px gap | calendar panel | 80px flowers
-  #  side insets: 120px left/right so the poppies and dahlias stay visible
+  #  14px gap | 104px weather strip | 12px gap | calendar panel | 28px flowers
+  #  side insets: 40px left/right; content first, flowers peek around the edges
   skylight-strip-height: "104px"
-  skylight-strip-margin: "14px 120px 12px"
-  skylight-panel-margin: "0 120px"
-  skylight-panel-height: "calc(100vh - 210px)"   # 14 + 104 + 12 + 80 = 210
+  skylight-strip-margin: "14px 40px 12px"
+  skylight-panel-margin: "0 40px"
+  skylight-panel-height: "calc(100vh - 158px)"   # 14 + 104 + 12 + 28 = 158
   vertical-stack-card-gap: "0px"
   stack-card-gap: "0px"

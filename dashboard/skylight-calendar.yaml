@@ -124,8 +124,8 @@ views:
                   --day-date-number-line-height: 38px;
                   --header-spacing: 8px;
                   box-sizing: border-box;
-                  margin: var(--skylight-panel-margin, 0 120px);
-                  height: var(--skylight-panel-height, calc(100vh - 210px));
+                  margin: var(--skylight-panel-margin, 0 40px);
+                  height: var(--skylight-panel-height, calc(100vh - 158px));
                   overflow: hidden;
                   background: var(--skylight-panel-bg, rgba(250, 246, 236, 0.74)) !important;
                   -webkit-backdrop-filter: blur(var(--skylight-panel-blur, 6px));

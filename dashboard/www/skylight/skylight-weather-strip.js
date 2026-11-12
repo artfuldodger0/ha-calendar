@@ -274,7 +274,7 @@ class SkylightWeatherStrip extends HTMLElement {
       .strip {
         box-sizing: border-box;
         height: var(--skylight-strip-height, 104px);
-        margin: var(--skylight-strip-margin, 14px 120px 12px);
+        margin: var(--skylight-strip-margin, 14px 40px 12px);
         padding: 0 22px;
         display: flex;
         align-items: center;
