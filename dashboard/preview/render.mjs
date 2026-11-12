@@ -149,6 +149,7 @@ const page_html = `<!doctype html><html><head><meta charset="utf-8">
   await card.updateComplete;
   // what card-mod does: a <style> in the card's shadow root
   const st = document.createElement('style'); st.textContent = card_mod.style; card.shadowRoot.appendChild(st);
+  window.__strip = strip; window.__hass = hass;
   window.__ready = true;
 </script></body></html>`;
 
@@ -202,6 +203,8 @@ for (const dpr of [1, 2]) {
     await page.waitForTimeout(300);
     const open = await page.evaluate(() => document.querySelector('week-planner-card').shadowRoot.querySelector('ha-dialog')?.open);
     console.log('detail dialog opens on click:', open);
+    const kept = await page.evaluate(async () => { const s = window.__strip; s.setConfig({ ...s._config, days: 5 }); s.hass = window.__hass; await new Promise((r) => setTimeout(r, 200)); return s.shadowRoot.querySelectorAll('.tile').length; });
+    console.log('forecast tiles after setConfig(days: 5):', kept);
     await page.screenshot({ path: path.join(outDir, 'dialog.png') });
   }
   await ctx.close();

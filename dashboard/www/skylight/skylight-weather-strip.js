@@ -90,14 +90,20 @@ class SkylightWeatherStrip extends HTMLElement {
     if (!config || !config.entity || !String(config.entity).startsWith('weather.')) {
       throw new Error('skylight-weather-strip: set `entity` to a weather.* entity');
     }
+    const entityChanged = this._config?.entity !== config.entity;
     this._config = {
       days: 7,
       show_clock: true,
       refresh_minutes: 30,
       ...config,
     };
-    this._forecast = null;
-    this._lastFetch = 0;
+    if (entityChanged) {
+      // New entity: drop the old forecast and fetch again on the next hass update.
+      this._forecast = null;
+      this._lastFetch = 0;
+      this._lastUpdated = null;
+      if (this._hass) this._fetchForecast();
+    }
     this._render();
   }
 
