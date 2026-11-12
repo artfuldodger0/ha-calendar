@@ -1,0 +1,332 @@
+# =============================================================================
+#  Skylight Garden Calendar: dashboard YAML for a 1280x800 Facebook Portal
+# -----------------------------------------------------------------------------
+#  WHERE THIS GOES
+#    Settings -> Dashboards -> (your Portal dashboard) -> pencil -> three dots
+#    -> "Raw configuration editor" -> replace the contents with this file.
+#
+#  REQUIRES (HACS -> Frontend)
+#    - week-planner-card   (tested against v1.14.1)
+#    - card-mod            (v3.4+)
+#    - kiosk-mode          (hides header + sidebar so the view fills 800px)
+#  PLUS the files from this folder:
+#    - /config/www/skylight/skylight-weather-strip.js   (dashboard resource)
+#    - /config/www/skylight/meadow.png                  (background image)
+#    - /config/www/skylight/fonts/*.woff2               (local Nunito font)
+#    - /config/themes/skylight-garden.yaml              (theme)
+#
+#  Everything you need to change is marked   # <<< CHANGE ME
+# =============================================================================
+
+kiosk_mode:
+  kiosk: true                      # hide HA header + sidebar on this dashboard
+
+views:
+  - title: Calendar
+    path: calendar
+    type: panel                    # one card, full width
+    theme: skylight-garden         # background, fonts, frosted panels
+    cards:
+      - type: vertical-stack
+        cards:
+
+          # ---------------------------------------------------------------
+          #  TOP STRIP: clock + live weather + daily forecast
+          #  Data: weather.get_forecasts (type: daily), HA-native MDI icons
+          # ---------------------------------------------------------------
+          - type: custom:skylight-weather-strip
+            entity: weather.home               # <<< CHANGE ME (your weather entity)
+            days: 7
+            show_clock: true
+            refresh_minutes: 30
+
+          # ---------------------------------------------------------------
+          #  WEEK PLANNER
+          # ---------------------------------------------------------------
+          - type: custom:week-planner-card
+            days: 7                        # rolling week ...
+            startingDay: today             # ... starting today (today = wide first column)
+            noCardBackground: false        # the frosted panel comes from card-mod below
+            showLegend: true               # person chips across the top of the panel
+            legendToggle: true             # tap a person to hide / show their events
+            hidePastEvents: false          # past events stay, dimmed by CSS
+            hideDaysWithoutEvents: false
+            combineSimilarEvents: true     # shared events show once, with extra color stripes
+            multiDayMode: default
+            locale: en                     # <<< CHANGE ME (optional: nl, de, fr, ...)
+            timeFormat: "H:mm"             # use "h:mm a" for 12-hour clocks
+            # Skylight-style day header: small weekday above a big date number.
+            # (Luxon format: text in single quotes is literal HTML.)
+            dayFormat: "'<span class=\"wd\">'ccc'</span><span class=\"number\">'d'</span>'"
+            texts:
+              fullDay: All day
+              noEvents: ""                 # no "No events" placeholder
+              moreEvents: More…
+              today: Today
+              tomorrow: ""
+            # (no `weather:` block on purpose; the strip above replaces the
+            #  per-day weather icons)
+
+            # =============================================================
+            #  PERSON MAPPING: one calendar entity per person
+            #  entity  -> name (legend + event dialog) -> color -> initial
+            #
+            #  Default palette is tuned to the terracotta / sage background
+            #  and keeps dark text readable (contrast >= 4.5:1):
+            #    terracotta #E08A6B   sage #9DB98A   marigold #E9B65C
+            #    dusty blue #8FAFC4   plum-rose #C995A8
+            #  The icon is the per-event person badge, e.g. mdi:alpha-a-circle
+            #  (any letter a-z works, or mdi:account-circle, mdi:dog, ...).
+            # =============================================================
+            calendars:
+              - entity: calendar.person_1      # <<< CHANGE ME
+                name: Anna                     # <<< CHANGE ME
+                color: "#E08A6B"               # terracotta
+                icon: mdi:alpha-a-circle       # <<< CHANGE ME (first letter of name)
+
+              - entity: calendar.person_2      # <<< CHANGE ME
+                name: Ben                      # <<< CHANGE ME
+                color: "#8FAFC4"               # dusty blue
+                icon: mdi:alpha-b-circle       # <<< CHANGE ME
+
+              - entity: calendar.person_3      # <<< CHANGE ME
+                name: Cleo                     # <<< CHANGE ME
+                color: "#9DB98A"               # sage
+                icon: mdi:alpha-c-circle       # <<< CHANGE ME
+
+              - entity: calendar.person_4      # <<< CHANGE ME
+                name: Dev                      # <<< CHANGE ME
+                color: "#E9B65C"               # marigold
+                icon: mdi:alpha-d-circle       # <<< CHANGE ME
+
+              # Spare 5th person (uncomment to use):
+              # - entity: calendar.person_5    # <<< CHANGE ME
+              #   name: Eli                    # <<< CHANGE ME
+              #   color: "#C995A8"             # plum-rose
+              #   icon: mdi:alpha-e-circle
+            # ======================= END PERSON MAPPING ===================
+
+            # ---------------------------------------------------------------
+            #  SKYLIGHT STYLING (card-mod)
+            #  Uses the card's documented classes (.day.today, .event.fullday,
+            #  .event.past ...) plus a few internal ones (.inner, .time,
+            #  .title, .legend, --border-color). See README "Update risk".
+            # ---------------------------------------------------------------
+            card_mod:
+              style: |
+                ha-card {
+                  --days-spacing: 10px;
+                  --event-spacing: 7px;
+                  --event-padding: 7px 9px;
+                  --event-border-radius: 12px;
+                  --legend-spacing: 8px;
+                  --day-date-number-font-size: 30px;
+                  --day-date-number-line-height: 38px;
+                  --header-spacing: 8px;
+                  box-sizing: border-box;
+                  margin: var(--skylight-panel-margin, 0 120px);
+                  height: var(--skylight-panel-height, calc(100vh - 210px));
+                  overflow: hidden;
+                  background: var(--skylight-panel-bg, rgba(250, 246, 236, 0.74)) !important;
+                  -webkit-backdrop-filter: blur(var(--skylight-panel-blur, 6px));
+                  backdrop-filter: blur(var(--skylight-panel-blur, 6px));
+                  border: none !important;
+                  border-radius: var(--skylight-panel-radius, 22px) !important;
+                  box-shadow: 0 6px 24px rgba(80, 64, 40, 0.12) !important;
+                  color: var(--skylight-ink, #2f2a24);
+                  font-family: var(--skylight-font, 'Nunito', system-ui, sans-serif);
+                }
+                ha-card .card-content { height: 100%; box-sizing: border-box; padding: 12px 14px 14px; }
+                ha-card .loader { top: 10px; right: 14px; }
+
+                /* ---------- grid: header row + 7 columns, today ~2x wide ---------- */
+                ha-card .container {
+                  height: 100%;
+                  flex-wrap: wrap;
+                  align-content: flex-start;
+                  row-gap: 8px;
+                }
+                ha-card .container .header { height: 30px; align-items: center; justify-content: flex-start; }
+                ha-card .container .day {
+                  flex: 1 1 0;
+                  width: auto;
+                  min-width: 0;
+                  margin: 0;
+                  height: calc(100% - 38px);
+                  display: flex;
+                  flex-direction: column;
+                  box-sizing: border-box;
+                  padding: 6px 4px 0;
+                  border-radius: 16px;
+                }
+                ha-card .container .day.today {
+                  flex-grow: 2.1;                   /* <- today column width ratio */
+                  background: rgba(255, 255, 255, 0.55);
+                  padding: 6px 8px 0;
+                }
+
+                /* ---------- day header: weekday over big date ---------- */
+                ha-card .container .day .date {
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  flex-wrap: wrap;
+                  padding: 0 2px 6px;
+                  border-bottom: 1.5px solid rgba(107, 95, 82, 0.18);
+                }
+                ha-card .container .day .date .wd {
+                  width: 100%;
+                  font-size: 13px;
+                  font-weight: 800;
+                  letter-spacing: 0.8px;
+                  text-transform: uppercase;
+                  color: var(--skylight-ink-soft, #6b5f52);
+                }
+                ha-card .container .day .date .number {
+                  font-size: 30px;
+                  line-height: 38px;
+                  font-weight: 800;
+                  color: var(--skylight-ink, #2f2a24);
+                }
+                ha-card .container .day.today .date .wd { color: var(--skylight-accent, #c4623f); }
+                ha-card .container .day.today .date .number {
+                  display: inline-grid;
+                  place-items: center;
+                  min-width: 38px;
+                  height: 38px;
+                  border-radius: 19px;
+                  background: var(--skylight-accent, #c4623f);
+                  color: #fffaf2;
+                }
+                ha-card .container .day.today .date::after {
+                  content: "Today";
+                  font-size: 18px;
+                  font-weight: 800;
+                  color: var(--skylight-accent, #c4623f);
+                }
+                ha-card .container .day.saturday:not(.today) .date .number,
+                ha-card .container .day.sunday:not(.today) .date .number { color: #7d6a58; }
+
+                /* ---------- events column: scrolls (touch) if a day overflows ---------- */
+                ha-card .container .day .events {
+                  flex: 1 1 auto;
+                  min-height: 0;
+                  margin-top: 8px;
+                  overflow-y: auto;
+                  scrollbar-width: none;
+                  padding-bottom: 10px;
+                  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+                  mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+                }
+                ha-card .container .day .events::-webkit-scrollbar { display: none; }
+                ha-card .container .day .events .none { display: none; }
+                ha-card .container .day .events .more {
+                  background: transparent;
+                  color: var(--skylight-ink-soft, #6b5f52);
+                  font-size: 13px;
+                  font-weight: 700;
+                  text-align: center;
+                }
+
+                /* ---------- event pills (person color) ---------- */
+                ha-card .container .day .events .event {
+                  position: relative;
+                  border-left: none;
+                  border-radius: var(--event-border-radius);
+                  background: color-mix(in srgb, var(--border-color) 42%, #fffaf2);
+                  color: var(--skylight-ink, #2f2a24);
+                  box-shadow: 0 1px 2px rgba(80, 64, 40, 0.10);
+                  overflow: hidden;
+                  align-items: flex-start;
+                }
+                ha-card .container .day .events .event::before {           /* person color edge */
+                  content: "";
+                  flex: 0 0 5px;
+                  align-self: stretch;
+                  background: var(--border-color);
+                }
+                ha-card .container .day .events .event .additionalColor {
+                  flex: 0 0 5px;
+                  width: 5px;
+                  align-self: stretch;
+                }
+                ha-card .container .day .events .event .inner { min-width: 0; padding: var(--event-padding); }
+                ha-card .container .day .events .event .time {
+                  margin: 0 0 1px;
+                  font-size: 12px;
+                  line-height: 15px;
+                  font-weight: 700;
+                  color: rgba(47, 42, 36, 0.72);
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: clip;
+                }
+                ha-card .container .day .events .event .title {
+                  font-size: 14px;
+                  line-height: 17px;
+                  font-weight: 700;
+                  overflow-wrap: break-word;
+                  hyphens: auto;
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  -webkit-line-clamp: 3;
+                  overflow: hidden;
+                }
+                ha-card .container .day .events .event .icon {          /* person badge */
+                  padding: 6px 6px 0 0;
+                  --mdc-icon-size: 18px;
+                  color: color-mix(in srgb, var(--border-color) 55%, #2f2a24);
+                }
+                /* narrow columns: the badge moves into the corner */
+                ha-card .container .day:not(.today) .events .event .icon {
+                  position: absolute;
+                  bottom: 4px;
+                  right: 4px;
+                  padding: 0;
+                  line-height: 0;
+                  --mdc-icon-size: 15px;
+                }
+                ha-card .container .day:not(.today) .events .event .inner { padding: 7px 7px; }
+                ha-card .container .day:not(.today) .events .event .title { padding-right: 10px; font-size: 13px; line-height: 16px; }
+
+                /* today: bigger, roomier */
+                ha-card .container .day.today .events .event .inner { padding: 8px 10px; }
+                ha-card .container .day.today .events .event .time { font-size: 13px; line-height: 17px; }
+                ha-card .container .day.today .events .event .title {
+                  font-size: 16px;
+                  line-height: 20px;
+                  -webkit-line-clamp: 4;
+                }
+                ha-card .container .day.today .events .event .icon { padding: 9px 9px 0 0; --mdc-icon-size: 22px; }
+
+                /* all-day: solid person color, Skylight banner style */
+                ha-card .container .day .events .event.fullday { background: color-mix(in srgb, var(--border-color) 82%, #fffaf2); }
+                ha-card .container .day .events .event.fullday .time {
+                  font-size: 11px;
+                  text-transform: uppercase;
+                  letter-spacing: 0.6px;
+                  color: rgba(47, 42, 36, 0.8);
+                }
+                ha-card .container .day .events .event.fullday .icon { color: #2f2a24; opacity: 0.7; }
+
+                /* happening now: soft ring; finished: faded */
+                ha-card .container .day .events .event.ongoing { box-shadow: 0 0 0 2px var(--border-color), 0 2px 6px rgba(80, 64, 40, 0.18); }
+                ha-card .container .day .events .event.past { opacity: 0.5; }
+
+                /* ---------- legend = person chips ---------- */
+                ha-card .container .legend ul li {
+                  display: flex;
+                  align-items: center;
+                  gap: 5px;
+                  padding: 3px 11px 3px 5px;
+                  border-radius: 14px;
+                  background: color-mix(in srgb, var(--legend-calendar-color) 45%, #fffaf2);
+                  font-size: 14px;
+                  font-weight: 700;
+                  line-height: 20px;
+                  --mdc-icon-size: 20px;
+                }
+                ha-card .container .legend ul li ha-icon {
+                  color: color-mix(in srgb, var(--legend-calendar-color) 55%, #2f2a24);
+                }
+                ha-card .container .legend ul li.hidden { opacity: 0.45; }

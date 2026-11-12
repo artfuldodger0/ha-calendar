@@ -1,0 +1,52 @@
+# =============================================================================
+#  Skylight Garden theme
+#  WHERE THIS GOES:  /config/themes/skylight-garden.yaml
+#  configuration.yaml must contain:
+#      frontend:
+#        themes: !include_dir_merge_named themes
+#  then: Developer tools -> Actions -> "frontend.reload_themes".
+#  The dashboard view selects it with `theme: skylight-garden`.
+# =============================================================================
+skylight-garden:
+  # --- background: the botanical frame, scaled to fill the 1280x800 screen --
+  lovelace-background: "center / cover no-repeat fixed url('/local/skylight/meadow.png'), #b5c49a"
+
+  # --- typography (Nunito is served locally from /local/skylight/fonts) -----
+  primary-font-family: "'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif"
+  ha-font-family-body: "'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif"
+  ha-font-family-heading: "'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif"
+  paper-font-common-base_-_font-family: "'Nunito', system-ui, sans-serif"
+  skylight-font: "'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif"
+
+  # --- ink + accents (warm browns and terracotta, matching the art) ---------
+  primary-text-color: "#2f2a24"
+  secondary-text-color: "#6b5f52"
+  primary-color: "#c4623f"
+  accent-color: "#c4623f"
+  skylight-ink: "#2f2a24"
+  skylight-ink-soft: "#6b5f52"
+  skylight-ink-faint: "#8d8173"
+  skylight-accent: "#c4623f"
+  skylight-rule: "rgba(107, 95, 82, 0.22)"
+
+  # --- frosted cream panels -------------------------------------------------
+  skylight-panel-bg: "rgba(250, 246, 236, 0.74)"
+  skylight-panel-blur: "6px"
+  skylight-panel-radius: "22px"
+  card-background-color: "#fbf7ee"          # event-detail dialog
+  ha-card-background: "rgba(250, 246, 236, 0.74)"
+  ha-card-border-radius: "22px"
+  ha-card-border-width: "0px"
+  mdc-theme-surface: "#fbf7ee"
+  ha-dialog-border-radius: "22px"
+  divider-color: "rgba(107, 95, 82, 0.22)"
+
+  # --- 1280x800 layout budget (top to bottom) -------------------------------
+  #  14px gap | 104px weather strip | 12px gap | calendar panel | 80px flowers
+  #  side insets: 120px left/right so the poppies and dahlias stay visible
+  skylight-strip-height: "104px"
+  skylight-strip-margin: "14px 120px 12px"
+  skylight-panel-margin: "0 120px"
+  skylight-panel-height: "calc(100vh - 210px)"   # 14 + 104 + 12 + 80 = 210
+  vertical-stack-card-gap: "0px"
+  stack-card-gap: "0px"
